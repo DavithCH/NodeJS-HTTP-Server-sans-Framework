@@ -30,6 +30,16 @@ const server = http.createServer((req, res) => {
         console.log(err);
         res.end();
       }
+    } else if (req.url == "/public/js/script.css") {
+      try {
+        const scirptFile = fs.readFileSync("./public/js/script.js");
+        res.writeHead(200, "Content-Type", "text/html");
+        res.write(scirptFile);
+        res.end();
+      } catch (err) {
+        console.log(err);
+        res.end();
+      }
     } else {
       res.writeHead(404, { "content-type": "text/html" });
       // res.write("<h1>404 Page introuvable</h1>");
