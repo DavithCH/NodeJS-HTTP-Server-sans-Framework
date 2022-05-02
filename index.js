@@ -17,6 +17,16 @@ const server = http.createServer((req, res) => {
         res.write(htmlFile);
         res.end();
       }
+    } else if (req.url === "/public/images/image.jpg") {
+      try {
+        const imageFile = fs.readFileSync("./public/images/image.jpg");
+        res.writeHead(200, { "Content-Type": "image/jpeg" });
+        res.write(imageFile);
+        res.end();
+      } catch (err) {
+        console.log(err);
+        res.end();
+      }
     } else {
       res.writeHead(404, { "content-type": "text/html" });
       // res.write("<h1>404 Page introuvable</h1>");
