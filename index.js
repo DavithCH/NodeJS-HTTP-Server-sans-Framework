@@ -17,7 +17,10 @@ const server = http.createServer((req, res) => {
         res.write(htmlFile);
         res.end();
       }
-    } else if (req.url === "/public/images/image.jpg") {
+    } else if (
+      req.url === "/public/images/image.jpg" ||
+      req.url === "/public/css/style.css"
+    ) {
       try {
         const imageFile = fs.readFileSync("./public/images/image.jpg");
         res.writeHead(200, { "Content-Type": "image/jpeg" });
