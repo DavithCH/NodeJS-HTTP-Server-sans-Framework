@@ -40,15 +40,15 @@ const server = http.createServer((req, res) => {
       //     console.log(err);
       //     res.end();
       //   }
-    } else if (req.url === `/public/${mimeType}/${fileName}.${mimeType}`) {
+    } else if (req.url.includes("/public/")) {
       try {
         const file = fs.readFileSync(
-          `/public/${mimeType}/${fileName}.${mimeType}`
+          `./public/${mimeType}/${fileName}.${mimeType}`
         );
         if (mimeType === "jpg") {
-          res.writeHead(200, "Content-Type", "image/jpeg");
+          res.writeHead(200, { "Content-Type": "image/jpeg" });
         } else {
-          res.writeHead(200, "Content-Type", "text/html");
+          res.writeHead(200, { "Content-Type": "text/html" });
         }
         res.write(file);
         res.end();
