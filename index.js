@@ -61,14 +61,20 @@ const server = http.createServer((req, res) => {
     } else if (req.url.includes("/api/name/")) {
       let id = Number(req.url.split("/")[3]);
       let objDB = JSON.stringify(memoryDb.get(id));
-      if (req.method === "GET") {
+      if (!memoryDb.has(id)) {
+        res.writeHead(404, { "content-type": "text/html" });
+        const htmlFile = fs.readFileSync("./public/page_404.html");
+        res.write(htmlFile);
+        res.end();
+      }
+      if (req.method === "GET" && memoryDb.has(id)) {
         res.writeHead(200, { "content-type": "application/json" });
         res.end(objDB);
-      } else if (req.method === "DELETE") {
+      } else if (req.method === "DELETE" && memoryDb.has(id)) {
         memoryDb.delete(id);
         res.writeHead(200, { "content-type": "text/html" });
         res.end("Successfully deleted object with id : " + id);
-      } else if (req.method === "PUT") {
+      } else if (req.method === "PUT" && memoryDb.has(id)) {
         let data = "";
         res.setHeader("content-type", "application/json");
         req.on("data", (chunk) => {
