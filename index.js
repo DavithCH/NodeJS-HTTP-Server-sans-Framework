@@ -39,21 +39,23 @@ const server = http.createServer((req, res) => {
         console.log(err);
         res.end();
       }
-      // } else if (req.method === "POST" && req.url !== "/") {
-      //   let data = "";
-      //   req.on("data", (chunk) => {
-      //     data += chunk;
-      //   });
-      //   req.on("end", () => {
-      //     data = JSON.parse(data);
-      //     res.end();
-      //   });
     } else if (req.url === "/api/names") {
       if (req.method === "GET") {
         const objDB = Object.fromEntries(memoryDb);
-        res.setHeader("Content-Type", "application/json");
+        res.writeHead(200, { "content-type": "application/json" });
         res.end(JSON.stringify(objDB));
+      } else if (req.method === "POST") {
+        console.log(memoryDb.length);
+        res.end();
       }
+    } else if (req.url.includes("/api/name/")) {
+      let id = Number(req.url.split("/")[3]);
+      let objDB = JSON.stringify(memoryDb.get(id));
+      if (req.method === "GET") {
+        res.writeHead(200, { "content-type": "application/json" });
+        res.end(objDB);
+      }
+      res.end();
     } else {
       res.writeHead(404, { "content-type": "text/html" });
       const htmlFile = fs.readFileSync("./public/page_404.html");
