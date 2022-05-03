@@ -30,7 +30,7 @@ const server = http.createServer((req, res) => {
         console.log(err);
         res.end();
       }
-    } else if (req.url == "/public/js/script.css") {
+    } else if (req.url == "/public/js/script.js") {
       try {
         const scirptFile = fs.readFileSync("./public/js/script.js");
         res.writeHead(200, "Content-Type", "text/html");
