@@ -45,8 +45,18 @@ const server = http.createServer((req, res) => {
         res.writeHead(200, { "content-type": "application/json" });
         res.end(JSON.stringify(objDB));
       } else if (req.method === "POST") {
-        console.log(memoryDb.length);
-        res.end();
+        let currentId = memoryDb.size;
+        let data = "";
+        res.setHeader("content-type", "application/json");
+        req.on("data", (chunk) => {
+          data += chunk;
+        });
+        req.on("end", () => {
+          data = JSON.parse(data);
+          memoryDb.set(currentId++, data);
+          res.writeHead(201, { "content-type": "text/html" });
+          res.end("Successfully added");
+        });
       }
     } else if (req.url.includes("/api/name/")) {
       let id = Number(req.url.split("/")[3]);
