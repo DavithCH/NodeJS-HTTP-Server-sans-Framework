@@ -1,6 +1,12 @@
 const http = require("http");
 const fs = require("fs");
 
+const memoryDb = new Map(); // est global
+let id = 0; // doit être global
+memoryDb.set(id++, { nom: "Alice" }); // voici comment set une nouvelle entrée.
+memoryDb.set(id++, { nom: "Bob" });
+memoryDb.set(id++, { nom: "Charlie" });
+
 const server = http.createServer((req, res) => {
   try {
     if (req.url === "/") {
@@ -33,15 +39,21 @@ const server = http.createServer((req, res) => {
         console.log(err);
         res.end();
       }
-    } else if (req.method === "POST" && req.url !== "/") {
-      let data = "";
-      req.on("data", (chunk) => {
-        data += chunk;
-      });
-      req.on("end", () => {
-        data = JSON.parse(data);
-        res.end();
-      });
+      // } else if (req.method === "POST" && req.url !== "/") {
+      //   let data = "";
+      //   req.on("data", (chunk) => {
+      //     data += chunk;
+      //   });
+      //   req.on("end", () => {
+      //     data = JSON.parse(data);
+      //     res.end();
+      //   });
+    } else if (req.url === "/api/names") {
+      if (req.method === "GET") {
+        const objDB = Object.fromEntries(memoryDb);
+        res.setHeader("Content-Type", "application/json");
+        res.end(JSON.stringify(objDB));
+      }
     } else {
       res.writeHead(404, { "content-type": "text/html" });
       const htmlFile = fs.readFileSync("./public/page_404.html");
@@ -53,4 +65,5 @@ const server = http.createServer((req, res) => {
     res.end();
   }
 });
+
 server.listen(5000);
