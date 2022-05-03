@@ -64,8 +64,24 @@ const server = http.createServer((req, res) => {
       if (req.method === "GET") {
         res.writeHead(200, { "content-type": "application/json" });
         res.end(objDB);
+      } else if (req.method === "DELETE") {
+        memoryDb.delete(id);
+        res.writeHead(200, { "content-type": "text/html" });
+        res.end("Successfully deleted object with id : " + id);
+      } else if (req.method === "PUT") {
+        let data = "";
+        res.setHeader("content-type", "application/json");
+        req.on("data", (chunk) => {
+          data += chunk;
+        });
+        req.on("end", () => {
+          data = JSON.parse(data);
+          memoryDb.set(id, data);
+          res.writeHead(200, { "content-type": "text/html" });
+          res.end("Successfully updated object with id : " + id);
+          res.end();
+        });
       }
-      res.end();
     } else {
       res.writeHead(404, { "content-type": "text/html" });
       const htmlFile = fs.readFileSync("./public/page_404.html");
